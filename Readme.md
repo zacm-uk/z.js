@@ -12,6 +12,8 @@ the goal is to provide the following:
 - a repl interface to use Z.JS.
 - snippets to allow using Z.JS in node and web projects without the need for an external package manager.
 - an easy way to setup a private package server.
+- code validation before running or uploading, for example to ensure compatibility with the runtime environment.
+- code transpilation (including typescript) either before uploading or before running to ensure compatibility with the runtime environment.
 
 ## Why?
 There aren't many package management options of JavaScript. And the ones there are can be over the top for a simple project.
