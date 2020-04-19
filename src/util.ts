@@ -6,8 +6,7 @@ import { tmpdir } from 'os'
 import { randomBytes } from 'crypto'
 import { join } from 'path'
 
-import { sync as rimraf } from 'rimraf'
-import { mkdirSync } from 'fs'
+import { remove, mkdirSync } from 'fs-extra'
 
 export type ExecOpts = {
   command: string
@@ -86,11 +85,11 @@ export class TempDir {
     return this._path
   }
 
-  cleanup() {
+  async cleanup() {
     if (!this._open) {
       return
     }
-    rimraf(this._path)
+    await remove(this._path)
     this._open = false
   }
 }

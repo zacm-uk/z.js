@@ -6,21 +6,20 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start": "node build/main.js"
+    "start": "node --experimental-repl-await build/main.js"
   },
   "keywords": [],
   "author": "Zac McChesney",
   "license": "MIT",
   "devDependencies": {
-    "@types/fs-extra": "^8.1.0",
+    "@types/bluebird": "^3.5.30",
+    "@types/fs-extra": "8.1.0",
     "@types/node": "13.11.1",
-    "@types/rimraf": "^3.0.0",
-    "@types/tar": "^4.0.3",
+    "@types/validator": "^13.0.0",
     "typescript": "3.8.3"
   },
   "dependencies": {
-    "fs-extra": "^9.0.0",
-    "rimraf": "^3.0.2",
-    "tar": "^6.0.1"
+    "fs-extra": "9.0.0",
+    "z-empire": "1.1.3"
   }
 }
