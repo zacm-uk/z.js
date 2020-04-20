@@ -24,6 +24,6 @@
   },
   "dependencies": {
     "fs-extra": "9.0.0",
-    "z-empire": "1.1.7"
+    "z-empire": "1.1.8"
   }
 }

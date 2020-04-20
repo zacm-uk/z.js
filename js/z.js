@@ -1,21 +1,53 @@
-const empireLoaded = fetch('https://zfilestore.blob.core.windows.net/public/z-empire-client.js')
-  .then(res => res.text())
-  .then(script => eval(script))
+const isNode = (() => {
+  try {
+    const isNode = eval('(process.release.name === "node") && (Object.prototype.toString.call(process) === "[object process]")')
+    if (isNode) {
+      return true
+    }
+  } catch {
+  }
+  return false
+})()
+
+const get = url => {
+  if (isNode) {
+    const fn = require(url.startsWith('https') ? 'https' : 'http').get
+    return new Promise((resolve, reject) => {
+      fn(url, response => {
+        let data = ''
+        response.on('data', chunk => data += chunk)
+        response.on('end', () => resolve(data))
+      })
+        .on('error', reject)
+    })
+  }
+  return fetch(url)
+    .then(res => res.text())
+}
+
+const empireLoaded = get('https://gitcdn.link/repo/zacm-uk/z-empire/master/z-empire-client.js')
+  .then(script => {
+    const module = { exports: {} }
+    eval(script)
+    if (isNode) {
+      Object.assign(global, module.exports)
+    }
+  })
 
 const getMeta = (metaKey, client) => client.getData(metaKey).then(({ value }) => (value ? JSON.parse(value) : { keyMap: {} }))
 
 const setMeta = (meta, metaKey, client) => client.updateData(metaKey, JSON.stringify(meta))
 
-const toHex = str => {
+const toHex = isNode ? str => Buffer.from(str).toString('hex') : str => {
   str = unescape(encodeURIComponent(str))
   let hex = ''
   for (let i = 0; i < str.length; ++i) {
-    hex += str.charCodeAt(i).toString(16)
-  }
-  return hex
+  hex += str.charCodeAt(i).toString(16)
+}
+return hex
 }
 
-const fromHex = hex => {
+const fromHex = isNode ? hex => Buffer.from(hex, 'hex').toString() : hex => {
   let str = ''
   for (let i = 0; i < hex.length; i += 2) {
     str += String.fromCharCode(parseInt(hex.substr(i, 2), 16))
@@ -88,7 +120,7 @@ const createNewGlobalContext = () => ({
   pkg: new PackageContext()
 })
 
-Object.defineProperty(window, 'z', {
+Object.defineProperty(isNode ? module.exports : window, 'z', {
   value: createNewGlobalContext(),
   enumerable: true,
   configurable: false

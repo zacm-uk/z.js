@@ -70,7 +70,7 @@ export const uploadProject = async (name: string, version: string, dir: string) 
     }
     await writeFile(tempFile, file.file, 'utf8')
     console.log(`Uploading ${ path } as ${ file.newName }`)
-    await z.pkg.uploadPackage(name, version, tempFile)
+    await z.pkg.uploadPackage(file.newName, version, tempFile)
   }
   await remove(tempDir)
   console.log(`Uploaded ${ name }@${ version }`)

@@ -2,7 +2,7 @@ import { delimiter, normalize } from 'path'
 
 import repl from 'repl'
 
-import './z-mods'
+import './'
 
 import { WELCOME_TEXT, REPL_HISTORY_PATH, PKG_BIN_DIR } from './settings'
 

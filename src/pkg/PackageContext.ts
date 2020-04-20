@@ -1,7 +1,7 @@
 import { join, resolve, basename } from 'path'
 import { existsSync, readFile, remove, writeFile } from 'fs-extra'
 
-import { getPackage, uploadPackage } from '../pkg-server'
+import { getPackage, uploadPackage, getLatestVersion } from '../pkg-server'
 import { createNewGlobalContext } from '../z-mods/global'
 import { uploadProject } from '../project-uploader'
 
@@ -48,6 +48,9 @@ export class PackageContext {
   }
 
   async require(name: string, version: string) {
+    if (version === 'latest') {
+      version = await getLatestVersion(name)
+    }
     const path = join(this.packageDir, `${ name }~${ version }`)
     if (!existsSync(path)) {
       if (!this.autoInstallMissing) {

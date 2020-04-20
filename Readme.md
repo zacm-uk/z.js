@@ -22,14 +22,33 @@ For example if you're writing a small script and you need to format a date, You 
 Z.JS will not be suitable for every project, or even most. Especially if you require dependencies with native code. However it will hopefully be perfect for simple projects, or even use on the web to manage a site's dependencies.
 
 ## Usage
-The below snippets use the version I have hosted on my own storage solution. Feel free to link to the GitHub version instead.
 
 ### Web
+There are two ways to load z.js in a web browser:
+
+### Script tag
+Loading z.js with a script tag creates a promise on window called ```zLoaded``` that resolves when z.js has finished loading onto window.
+
 ```html
-<script src="https://zfilestore.blob.core.windows.net/public/z.js"></script>
+<script src="https://gitcdn.link/repo/zacm-uk/z.js/master/js/loader.js"></script>
 <script>
-z.pkg.require('z.js', '1.0.0')
-  .then(async z => {
+zLoaded.then(async () => {
+  const test = await z.pkg.require('test', '1.0.0')
+  test.hello()
+})
+</script>
+```
+
+### Fetch/eval
+Using fetch and eval to load z.js provides easier readability as you aren't relying on a random promise that you can't see being created.
+```html
+<script>
+const loadZ = () => fetch('https://gitcdn.link/repo/zacm-uk/z.js/master/js/loader.js')
+  .then(res => res.text())
+  .then(script => eval(script))
+
+loadZ()
+  .then(async () => {
     const test = await z.pkg.require('test', '1.0.0')
     test.hello()
   })

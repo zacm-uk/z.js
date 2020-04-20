@@ -9,4 +9,33 @@ const isNode = (() => {
   return false
 })()
 
-module.exports = isNode ? z.pkg.require('z.js-node', z.meta.version) : z.pkg.require('z.js-web', z.meta.version)
+if (isNode && !global.z) {
+  const { get } = require('https')
+  const promiseGet = url => new Promise((resolve, reject) => {
+    get(url, response => {
+      let data = ''
+      response.on('data', chunk => data += chunk)
+      response.on('end', () => {
+        console.log(data)
+        resolve(data)
+      })
+    })
+      .on('error', reject)
+  })
+  const loaded = promiseGet('https://gitcdn.link/repo/zacm-uk/z.js/master/js/z.js')
+    .then(script => eval(script))
+    .then(() => global.z = module.exports.z)
+  global.zLoaded = loaded
+  module.exports = loaded
+} else if (!isNode && !window.z) {
+  const loaded = fetch('https://gitcdn.link/repo/zacm-uk/z.js/master/js/z.js')
+    .then(res => res.text())
+    .then(script => eval(script))
+  try {
+    return loaded
+  } catch {
+    window.zLoaded = loaded
+  }
+} else {
+  module.exports = isNode ? z.pkg.require('z.js', z.meta.version) : z.pkg.require('z.js', z.meta.version)
+}
