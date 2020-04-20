@@ -22,43 +22,61 @@ For example if you're writing a small script and you need to format a date, You 
 Z.JS will not be suitable for every project, or even most. Especially if you require dependencies with native code. However it will hopefully be perfect for simple projects, or even use on the web to manage a site's dependencies.
 
 ## Usage
+### Loading (platform agnostic/async)
+The following code can be used in either Node.JS or a web browser to load the same version of z.js:
 
-### Web
-There are two ways to load z.js in a web browser:
+Note: This code is minified to reduce the impact on you code.
 
-### Script tag
-Loading z.js with a script tag creates a promise on window called ```zLoaded``` that resolves when z.js has finished loading onto window.
+This code does the following:
+
+- Detects if the code is running in Node.JS or a browser
+- Uses either ```fetch``` or Node.JS ```https``` module to download loader.js from github
+- Executes loader.js using eval, loader.js creates a promise that can be accessed using ```global.zLoaded``` or ```window.zLoaded```
+- When this promise resolves, ```z``` will be available in the global context (window or global)
+
+```javascript
+(async()=>{const isNode=(()=>{try{const isNode=eval('(process.release.name === "node") && (Object.prototype.toString.call(process) === "[object process]")')
+if(isNode){return!0}}catch{}
+return!1})()
+const get=url=>{if(isNode){const fn=require(url.startsWith('https')?'https':'http').get
+return new Promise((resolve,reject)=>{fn(url,response=>{let data=''
+response.on('data',chunk=>data+=chunk)
+response.on('end',()=>resolve(data))}).on('error',reject)})}
+return fetch(url).then(res=>res.text())}
+await get('https://raw.githubusercontent.com/zacm-uk/z.js/master/js/loader.js').then(script=>eval(`(async () => {
+    ${ script }
+  })()`))})()
+```
+
+### Web (synchronous)
+Z.js can also be loaded in a script tag:
 
 ```html
-<script src="https://gitcdn.link/repo/zacm-uk/z.js/master/js/loader.js"></script>
+<script src="https://raw.githubusercontent.com/zacm-uk/z.js/master/js/z.js"></script>
 <script>
-zLoaded.then(async () => {
-  const test = await z.pkg.require('test', '1.0.0')
-  test.hello()
-})
+(async () => {
+  const { hello } = await z.pkg.require('test', '1.0.0')
+  hello()
+})()
 </script>
 ```
 
-### Fetch/eval
-Using fetch and eval to load z.js provides easier readability as you aren't relying on a random promise that you can't see being created.
-```html
-<script>
-const loadZ = () => fetch('https://raw.githubusercontent.com/zacm-uk/z.js/master/js/loader.js')
-  .then(res => res.text())
-  .then(script => eval(script))
+### NodeJS (synchronous)
+Z.js can also be loaded using require by first downloading ```js/z.js``` from this repository.
 
-loadZ()
-  .then(async () => {
-    const test = await z.pkg.require('test', '1.0.0')
-    test.hello()
-  })
-</script>
+It can then be used as below:
+
+```javascript
+require('./js/z')
+;(async () => {
+  const { hello } = await z.pkg.require('test', '1.0.0')
+  hello()
+})()
 ```
 
 ## z.pkg
 z.pkg is the package manager backing Z.JS. it consists of the following:
 
-- upload - a function to upload a single JavaScript file with a name and version.
 - require - a function to download a JavaScript file by name and version, execute it in an async function, and return the result.
 - execute - a function to execute a local script with Z.JS loaded in the global context.
 
