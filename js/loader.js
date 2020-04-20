@@ -22,13 +22,13 @@ if (isNode && !global.z) {
     })
       .on('error', reject)
   })
-  const loaded = promiseGet('https://gitcdn.link/repo/zacm-uk/z.js/master/js/z.js')
+  const loaded = promiseGet('https://raw.githubusercontent.com/zacm-uk/z.js/master/js/z.js')
     .then(script => eval(script))
     .then(() => global.z = module.exports.z)
   global.zLoaded = loaded
   module.exports = loaded
 } else if (!isNode && !window.z) {
-  const loaded = fetch('https://gitcdn.link/repo/zacm-uk/z.js/master/js/z.js')
+  const loaded = fetch('https://raw.githubusercontent.com/zacm-uk/z.js/master/js/z.js')
     .then(res => res.text())
     .then(script => eval(script))
   try {

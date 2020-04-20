@@ -25,7 +25,7 @@ const get = url => {
     .then(res => res.text())
 }
 
-const empireLoaded = get('https://gitcdn.link/repo/zacm-uk/z-empire/master/z-empire-client.js')
+const empireLoaded = get('https://raw.githubusercontent.com/zacm-uk/z-empire/master/z-empire-client.js')
   .then(script => {
     const module = { exports: {} }
     eval(script)
