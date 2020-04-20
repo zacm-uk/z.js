@@ -5,6 +5,7 @@ import { mkdirSync, existsSync, readFileSync } from 'fs-extra'
 const pkgJSON = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf8'))
 
 export const VERSION = pkgJSON.version
+export const NAME = pkgJSON.name
 
 export const WELCOME_TEXT = `Z Node OS ${ VERSION }
 This repl is the exact same as 'node' with --experimental-repl-await enabled to allow the use of 'await'.

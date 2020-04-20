@@ -21,6 +21,21 @@ For example if you're writing a small script and you need to format a date, You 
 
 Z.JS will not be suitable for every project, or even most. Especially if you require dependencies with native code. However it will hopefully be perfect for simple projects, or even use on the web to manage a site's dependencies.
 
+## Usage
+The below snippets use the version I have hosted on my own storage solution. Feel free to link to the GitHub version instead.
+
+### Web
+```html
+<script src="https://zfilestore.blob.core.windows.net/public/z.js"></script>
+<script>
+z.pkg.require('z.js', '1.0.0')
+  .then(async z => {
+    const test = await z.pkg.require('test', '1.0.0')
+    test.hello()
+  })
+</script>
+```
+
 ## z.pkg
 z.pkg is the package manager backing Z.JS. it consists of the following:
 
