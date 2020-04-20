@@ -43,7 +43,7 @@ zLoaded.then(async () => {
 Using fetch and eval to load z.js provides easier readability as you aren't relying on a random promise that you can't see being created.
 ```html
 <script>
-const loadZ = () => fetch('https://gitcdn.link/repo/zacm-uk/z.js/master/js/loader.js')
+const loadZ = () => fetch('https://raw.githubusercontent.com/zacm-uk/z.js/master/js/loader.js')
   .then(res => res.text())
   .then(script => eval(script))
 

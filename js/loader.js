@@ -16,21 +16,26 @@ if (isNode && !global.z) {
       let data = ''
       response.on('data', chunk => data += chunk)
       response.on('end', () => {
-        console.log(data)
         resolve(data)
       })
     })
       .on('error', reject)
   })
   const loaded = promiseGet('https://raw.githubusercontent.com/zacm-uk/z.js/master/js/z.js')
-    .then(script => eval(script))
-    .then(() => global.z = module.exports.z)
+    .then(script => eval(`(async () => {
+      ${ script }
+    })()`))
+    .then(() => {
+      global.z = module.exports.z
+    })
   global.zLoaded = loaded
   module.exports = loaded
 } else if (!isNode && !window.z) {
   const loaded = fetch('https://raw.githubusercontent.com/zacm-uk/z.js/master/js/z.js')
     .then(res => res.text())
-    .then(script => eval(script))
+    .then(script => eval(`(async () => {
+      ${ script }
+    })()`))
   try {
     return loaded
   } catch {
@@ -38,4 +43,9 @@ if (isNode && !global.z) {
   }
 } else {
   module.exports = isNode ? z.pkg.require('z.js', z.meta.version) : z.pkg.require('z.js', z.meta.version)
+  const G = isNode ? global : window
+  G.zLoaded = module.exports
+  module.exports.then(z => {
+    G.z = z
+  })
 }

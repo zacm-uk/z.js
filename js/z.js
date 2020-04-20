@@ -123,5 +123,5 @@ const createNewGlobalContext = () => ({
 Object.defineProperty(isNode ? module.exports : window, 'z', {
   value: createNewGlobalContext(),
   enumerable: true,
-  configurable: false
+  configurable: true
 })
